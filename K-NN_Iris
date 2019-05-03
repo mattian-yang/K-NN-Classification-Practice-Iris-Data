@@ -1,0 +1,41 @@
+### Use the famous Iris Dataset to perform a simple K-NN classification according to the type of iris ###
+
+## General Preparations
+
+# import data
+iris_dt <- read.csv("iris_data.csv", header = TRUE)
+
+# load libraries
+library(class)
+library(gmodels)
+
+# randomly reorder the data frame
+iris <- iris_dt[sample(nrow(iris_dt)), ]
+
+# Check the correctness of reordering
+View(iris)
+
+## Construct objects for classifiation
+
+# normalise the variables
+normalise <- function(x) {
+    return ((x-min(x))/(max(x)-min(x)))
+}
+
+iris_n <- as.data.frame(lapply(iris[1:4], normalise))
+
+# get objects
+
+iris_train <- iris_n[1:129, ]
+iris_test <- iris_n[130:150, ]
+
+iris_train_labels <- iris[1:129, 5]
+iris_test_labels <- iris[130:150, 5]
+
+## Perform K-NN classification
+iris_test_pred <- knn(train = iris_train, test = iris_test, cl = iris_train_labels, k = 11)
+
+## Check the correctness of the classification
+CrossTable(x = iris_test_labels, y = iris_test_pred, prop.chisq = FALSE)
+
+
